@@ -14,7 +14,7 @@ export interface RadioProps {
 }
 
 export function Radio(props: RadioProps) {
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState(props.options.find(x => x.defaultChecked === true)?.id);
 
   function handleOptionChange(id: string, value: string) {
     setSelectedOption(id);
@@ -30,7 +30,6 @@ export function Radio(props: RadioProps) {
             className="w-0 h-0 opacity-0 -mr-2"
             value={option.value}
             checked={selectedOption === option.id}
-            defaultChecked={option.defaultChecked}
             onChange={() => handleOptionChange(option.id, option.value)}
             name={option.name}
             id={option.id}
