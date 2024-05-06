@@ -8,12 +8,14 @@ import 'moment/locale/ru';
 import moment from "moment";
 import { updateTask } from "../api/api";
 import { Button } from "../components/Button";
+import { formatTime } from "../utils/formatTime";
 
 export function UpcomingTask(props: TaskProps) {
   const { taskType = "personal" } = props;
   const formattedCategory = determineCategory(props.categoryName)
   const timeLeft = props.deadline && props.deadlineTimeMS && moment(props.deadline + props.deadlineTimeMS).fromNow()
   const now = moment().valueOf();
+  // const timeLeft = formatTime(props.deadline - now)
   const timeForComplete = now - props.createdAt;
 
   if(props.deletedAt != 0) return <></>

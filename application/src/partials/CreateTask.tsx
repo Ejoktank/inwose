@@ -1,8 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Radio } from "../components/Radio";
-import { TaskProps } from "../types/types";
 import moment from "moment";
 import { createTask } from "../api/api";
 
@@ -55,7 +54,7 @@ export function CreateTask() {
 
     console.log(obj);
 
-    createTask(obj);
+    // createTask(obj);
   }
 
   return (
@@ -71,7 +70,7 @@ export function CreateTask() {
           <div className="flex flex-col">
             <h4>Категория</h4>
             <Radio options={[
-              { label: 'Повышение квалификации', id: 'categoryRadio1', name: "categoryName", value: "qualification" },
+              { label: 'Повышение квалификации', id: 'categoryRadio1', name: "categoryName", value: "qualification", defaultChecked: true },
               { label: 'Расширение кругозора', id: 'categoryRadio2', name: "categoryName", value: "outlook" }
             ]} />
           </div>
@@ -79,7 +78,7 @@ export function CreateTask() {
             <h4>Значимость</h4>
             <Radio options={[
               { label: 'Большая', id: 'sizeRadio1', name: "sizeName", value: "lg" },
-              { label: 'Средняя', id: 'sizeRadio2', name: "sizeName", value: "md" },
+              { label: 'Средняя', id: 'sizeRadio2', name: "sizeName", value: "md", defaultChecked: true },
               { label: 'Маленькая', id: 'sizeRadio3', name: "sizeName", value: "sm" },
             ]} />
           </div>
@@ -89,13 +88,13 @@ export function CreateTask() {
             <h4>Вид</h4>
             <Radio onChange={(value) => onTypeChange(value)} options={[
               { label: 'Предстоящая', id: 'taskStatusRadio1', name: "taskStatus", value: "upcoming" },
-              { label: 'Завершённая', id: 'taskStatusRadio2', name: "taskStatus", value: "completed" }
+              { label: 'Завершённая', id: 'taskStatusRadio2', name: "taskStatus", value: "completed", defaultChecked: true }
             ]} />
           </div>
           <div className="flex flex-col">
             <h4>Тип задачи</h4>
             <Radio options={[
-              { label: 'Личная', id: 'taskTypeRadio1', name: "taskType", value: "personal" },
+              { label: 'Личная', id: 'taskTypeRadio1', name: "taskType", value: "personal", defaultChecked: true },
               { label: 'Пари', id: 'taskTypeRadio2', name: "taskType", value: "pari" },
               { label: 'Командная', id: 'taskTypeRadio3', name: "taskType", value: "team" }
             ]} />

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export interface RadioOption {
   label: string;
   id: string;
-  checked?: boolean;
+  defaultChecked?: boolean;
   name: string;
   value: string;
 }
@@ -30,6 +30,7 @@ export function Radio(props: RadioProps) {
             className="w-0 h-0 opacity-0 -mr-2"
             value={option.value}
             checked={selectedOption === option.id}
+            defaultChecked={option.defaultChecked}
             onChange={() => handleOptionChange(option.id, option.value)}
             name={option.name}
             id={option.id}
