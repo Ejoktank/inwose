@@ -12,9 +12,11 @@ import { Button } from "../components/Button";
 export function UpcomingTask(props: TaskProps) {
   const { taskType = "personal" } = props;
   const formattedCategory = determineCategory(props.categoryName)
-  const timeLeft = moment(props.deadline).fromNow()
+  const timeLeft = props.deadline && props.deadlineTimeMS && moment(props.deadline + props.deadlineTimeMS).fromNow()
   const now = moment().valueOf();
   const timeForComplete = now - props.createdAt;
+
+  if(props.deletedAt != 0) return <></>
 
   return (
     <div className="container-grid mb-4 bg-gray-100 rounded-lg">
@@ -39,13 +41,33 @@ export function UpcomingTask(props: TaskProps) {
             taskName: props.taskName,
             createdAt: props.createdAt,
             coinsAmount: props.coinsAmount,
-            changetAt: now,
-            dateOfComplete: now,
+            changetAt: moment().valueOf(),
+            dateOfComplete: moment().valueOf(),
             timeForComplete: timeForComplete,
           })} />
           <Coins coins={calculateCoins(props.sizeName, props.categoryName)} />
         </div>
-        <div className="">{taskType}</div>
+       <div className="flex justify-between w-[290px]">
+          <button 
+            className="ml-12 text-red-400"
+            onClick={() => updateTask(props.id, {
+              taskStatus: "completed",
+              sizeName: props.sizeName,
+              taskType: props.taskType,
+              categoryName: props.categoryName,
+              taskName: props.taskName,
+              createdAt: props.createdAt,
+              coinsAmount: props.coinsAmount,
+              changetAt: moment().valueOf(),
+              dateOfComplete: moment().valueOf(),
+              timeForComplete: timeForComplete,
+              deletedAt: moment().valueOf(),
+            })}
+            >
+              Удалить
+            </button>
+          <div className="">{taskType}</div>
+       </div>
       </div>
     </div>
   )

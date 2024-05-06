@@ -14,6 +14,7 @@ export const createTask = async (body: TaskProps) => {
   const data = await response.json();
   console.log("Task created!");  
   console.log(data);
+  alert("Task created!");
 };
 
 export const getAllTasks = async () => {
@@ -33,7 +34,7 @@ export const updateTask = async (taskId: number | undefined, updatedFields: Task
   });
 
   const data = await response.json();
-  console.log("Task updated (hopefully)!", data);
+  console.log("Task updated!", data);
   return data;
 };
 

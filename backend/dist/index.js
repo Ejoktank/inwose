@@ -48,13 +48,13 @@ app.patch("/tasks/:id", (req, res) => __awaiter(void 0, void 0, void 0, function
     const obj = req.body;
     const id = parseInt(req.params.id);
     if (!obj.taskType) {
-        return res.status(400).send("Nonono mr fish");
+        return res.status(400).send("Не получилось :(");
     }
     if (Number.isNaN(id)) {
         return res.status(400).send(`Ты лох ${req.params.id}`);
     }
     yield db.update(schema_1.tasks).set(obj).where((0, drizzle_orm_1.eq)(schema_1.tasks.id, id));
-    return res.json({ answer: "Охуенно" });
+    return res.json({ answer: "Успешно!" });
 }));
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
