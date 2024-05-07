@@ -47,8 +47,7 @@ export function CreateTask() {
     }
 
     obj.deadline = obj.deadline ? moment(obj.deadline, 'DDMMYYYY').valueOf() : 0;
-    obj.deadlineTimeMS = Number(obj.deadlineTime?.split(':')[0]) * 3600000 + Number(obj.deadlineTime?.split(':')[1]) * 60000 + Number(obj.deadlineTime?.split(':')[2]) * 1000
-    // obj.dateOfComplete = obj.dateOfComplete ? moment(obj.dateOfComplete, 'DDMMYYYY').valueOf() : 0;
+    obj.deadlineTimeMS = Number(obj.deadlineTime?.split(':')[0]) * 3600000 + Number(obj.deadlineTime?.split(':')[1]) * 60000 + Number(obj.deadlineTime?.split(':')[2]) * 1000;
     obj.dateOfComplete = obj.dateOfComplete ? moment().valueOf() : 0;
     obj.timeForComplete = obj.timeForComplete ? obj.timeForComplete * 3600000 : 0;
     obj.createdAt = moment().valueOf();
