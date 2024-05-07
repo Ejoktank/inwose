@@ -40,13 +40,13 @@ app.patch("/tasks/:id", async (req, res) => {
   const obj = req.body;
   const id = parseInt(req.params.id);
   if (!obj.taskType) {
-    return res.status(400).send("Не получилось :(")
+    return res.status(400).send("Не получилось :(");
   }
   if (Number.isNaN(id)) {
     return res.status(400).send(`Ты лох ${req.params.id}`);
   }
   await db.update(tasks).set(obj).where(eq(tasks.id, id));
-  return res.json({answer: "Успешно!"});
+  return res.json({ answer: "Успешно!" });
 });
 
 app.listen(3000, () => {
