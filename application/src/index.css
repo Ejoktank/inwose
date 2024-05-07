@@ -40,7 +40,7 @@
 
 @layer utilities {
   .container-grid {
-    @apply container mx-[auto] min-h-[80px] w-full grid grid-cols-[0.8fr,_2fr,_1fr] p-8;
+    @apply container mx-[auto] min-h-[80px] w-full grid grid-cols-[0.8fr,_2fr,_1fr] px-8 py-4;
 
     & > :nth-child(2) {
       @apply px-9;
