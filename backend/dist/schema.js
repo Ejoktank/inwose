@@ -13,6 +13,7 @@ exports.tasks = (0, sqlite_core_1.sqliteTable)("tasks", {
     createdAt: (0, sqlite_core_1.integer)('created_at').notNull(),
     changetAt: (0, sqlite_core_1.integer)('changed_at'),
     deletedAt: (0, sqlite_core_1.integer)('deleted_at'),
+    expiredAt: (0, sqlite_core_1.integer)('expired_at'),
     deadline: (0, sqlite_core_1.integer)('deadline'),
     deadlineTime: (0, sqlite_core_1.text)('deadline_time'),
     deadlineTimeMS: (0, sqlite_core_1.integer)('deadline_time_ms'),

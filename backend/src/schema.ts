@@ -12,6 +12,7 @@ export const tasks = sqliteTable("tasks", {
   createdAt: integer('created_at').notNull(),
   changetAt: integer('changed_at'),
   deletedAt: integer('deleted_at'),
+  expiredAt: integer('expired_at'),
 
   deadline: integer('deadline'),
   deadlineTime: text('deadline_time'),

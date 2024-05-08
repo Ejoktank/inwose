@@ -1,4 +1,4 @@
-import { TaskCategory } from "../components/Task"
+import { TaskCategory } from "../types/types"
 
 export function determineCategory(categoryName: TaskCategory) {
   switch (categoryName) {

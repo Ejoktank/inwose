@@ -25,6 +25,7 @@ export interface TaskProps {
   createdAt: number;
   changetAt?: number;
   deletedAt?: number;
+  expiredAt?: number;
 
   deadline?: number;
   deadlineTime?: string;

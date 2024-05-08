@@ -28,6 +28,7 @@ export function CreateTask() {
       createdAt: 0,
       changetAt: 0,
       deletedAt: 0,
+      expiredAt: 0,
 
       deadline: 0,
       deadlineTime: "",

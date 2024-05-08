@@ -1,6 +1,4 @@
-import { CoinsProps } from "../components/Coins"
-import { SizeType } from "../components/Size"
-import { TaskCategory } from "../components/Task"
+import { CoinsProps, SizeType, TaskCategory } from "../types/types"
 
 export function calculateCoins(size: SizeType, category: TaskCategory): CoinsProps {
 
