@@ -1,19 +1,6 @@
-import { CoinsProps, SizeType, TaskCategory } from "../types/types"
+import { SizeType, TaskCategory } from "../types/types"
 
-export function calculateCoins(size: SizeType, category: TaskCategory): CoinsProps {
-
-  const calculatedCoins = determineCoinsAmount(size, category)
-
-  const coins: CoinsProps = {
-    coinsAmount: calculatedCoins,
-    hasBg: false,
-    hasPlus: true,
-    coinColor: "green",
-  }
-  return coins
-}
-
-function determineCoinsAmount(size: SizeType, category: TaskCategory) {
+export function determineCoinsAmount(size: SizeType, category: TaskCategory) {
   let categoryCost = 0;
   let sizeCost = 0;
 

@@ -1,6 +1,5 @@
 import React from "react";
 import { Size } from "../components/Size";
-import { calculateCoins } from "../utils/calculateCoins";
 import { Coins } from "../components/Coins";
 import { determineCategory } from "../utils/determineCategory";
 import { TaskProps } from "../types/types";
@@ -16,22 +15,26 @@ export function UpcomingTask(props: TaskProps) {
   const now = moment().valueOf();
   const timeForComplete = now - props.createdAt;  
   
-  if (now - props.deadline + props.deadlineTimeMS > 0) {
-    console.log("Просрочено: ",  props.taskName);
-    const propsClone = structuredClone(props);
-
-    console.log(props);
-    
-    if(propsClone.expiredAt == 0) {
-      propsClone.expiredAt = moment().valueOf();
-      propsClone.coinsNotEarnedAmount = propsClone.coinsAmount
-      propsClone.coinsAmount = Math.floor(propsClone.coinsAmount * 2/3)
-      propsClone.coinColor = "red"
-      updateTask(props.id, propsClone);
-      console.log(props);
+  setInterval(() => {
+    if (now - props.deadline - props.deadlineTimeMS > 0) {
+      console.log('Ждём пока у кого-нибудь истечёт дедлайн');
+      
+      if(props.expiredAt == 0) {
+        const propsClone = structuredClone(props);
+        propsClone.expiredAt = moment().valueOf();
+        propsClone.coinsNotEarnedAmount = propsClone.coinsAmount
+        propsClone.coinsAmount = Math.floor(propsClone.coinsAmount * 2/3)
+        propsClone.coinColor = "red"
+        updateTask(props.id, propsClone);
+        
+        console.log("Просрочено: ",  props.taskName);
+        console.log(props);
+      }
     }
+  }, 5000)
 
-  }
+  console.log(props);
+
 
   if(props.deletedAt != 0) return <></>
 
@@ -62,7 +65,7 @@ export function UpcomingTask(props: TaskProps) {
             dateOfComplete: moment().valueOf(),
             timeForComplete: timeForComplete,
           })} />
-          <Coins coins={calculateCoins(props.sizeName, props.categoryName)} />
+          <Coins {...props} />
         </div>
        <div className="flex justify-between w-[290px]">
           <button 

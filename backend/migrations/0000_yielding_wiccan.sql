@@ -9,6 +9,7 @@ CREATE TABLE `tasks` (
 	`created_at` integer NOT NULL,
 	`changed_at` integer,
 	`deleted_at` integer,
+	`expired_at` integer,
 	`deadline` integer,
 	`deadline_time` text,
 	`deadline_time_ms` integer,

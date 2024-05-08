@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "04639a79-0a1f-4319-b741-3d63844d8ab0",
+  "id": "5b51e0ea-7902-4d9d-99b2-c633d328a0a9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "tasks": {
@@ -72,6 +72,13 @@
         },
         "deleted_at": {
           "name": "deleted_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "expired_at": {
+          "name": "expired_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,

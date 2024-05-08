@@ -4,6 +4,8 @@ import { Input } from "../components/Input";
 import { Radio } from "../components/Radio";
 import moment from "moment";
 import { createTask } from "../api/api";
+import { determineCoinsAmount } from "../utils/calculateCoins";
+import { TaskProps } from "../types/types";
 
 export function CreateTask() {
 
@@ -24,7 +26,7 @@ export function CreateTask() {
 
     const formData = new FormData(e.currentTarget);
 
-    const obj = {
+    const obj:TaskProps = {
       createdAt: 0,
       changetAt: 0,
       deletedAt: 0,
@@ -36,11 +38,17 @@ export function CreateTask() {
       dateOfComplete: 0,
       timeForComplete: 0,
 
-      coinsHasPlus: 0,
+      coinsHasPlus: 1,
       coinsHasBg: 0,
       coinsAmount: 0,
       coinsNotEarnedAmount: 0,
       coinColor: "green",
+
+      categoryName: 'qualification',
+      sizeName: 'md',
+      taskName: '',
+      taskStatus: 'upcoming',
+      taskType: 'personal'
     }
 
     for (const [key, value] of formData) {
@@ -52,6 +60,7 @@ export function CreateTask() {
     obj.dateOfComplete = obj.dateOfComplete ? moment().valueOf() : 0;
     obj.timeForComplete = obj.timeForComplete ? obj.timeForComplete * 3600000 : 0;
     obj.createdAt = moment().valueOf();
+    obj.coinsAmount = determineCoinsAmount(obj.sizeName, obj.categoryName)
 
     console.log(obj);
 
@@ -104,13 +113,13 @@ export function CreateTask() {
         </div>
         {isUpcoming && (
           <div className="mt-4 flex gap-2 items-end">
-            <Input name='deadline' label='Дедлайн' defaultValue={dateUpcomingStr.split(',')[0]} placeholder='Выбрать дату' />
-            <Input name='deadlineTime' label='Время' defaultValue={dateUpcomingStr.split(',')[1]} placeholder='Выбрать дату' />
+            <Input name='deadline' label='Дедлайн' defaultValue={dateUpcomingStr.split(',')[0].trim()} placeholder='Выбрать дату' />
+            <Input name='deadlineTime' label='Время' defaultValue={dateUpcomingStr.split(',')[1].trim()} placeholder='Выбрать дату' />
           </div>
         )}
         {!isUpcoming && (
           <div className="mt-4 flex gap-2 items-end">
-            <Input name='dateOfComplete' label='Дата выполнения' defaultValue={dateNowStr.split(',')[0]} placeholder='Выбрать дату' />
+            <Input name='dateOfComplete' label='Дата выполнения' defaultValue={dateNowStr.split(',')[0].trim()} placeholder='Выбрать дату' />
             <Input name='timeForComplete' label='Время (ч)' defaultValue="1" placeholder='Затраченное время' />
           </div>
         )}

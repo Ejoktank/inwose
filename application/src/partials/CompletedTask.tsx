@@ -1,13 +1,11 @@
 import React from "react";
 import { Size } from "../components/Size";
-import { calculateCoins } from "../utils/calculateCoins";
 import { Coins } from "../components/Coins";
 import { determineCategory } from "../utils/determineCategory";
 import { TaskProps } from "../types/types";
 import moment from "moment";
 import { formatTime } from "../utils/formatTime";
 import { updateTask } from "../api/api";
-
 
 
 export function CompletedTask(props: TaskProps) {
@@ -35,7 +33,7 @@ export function CompletedTask(props: TaskProps) {
       <div className="flex flex-col !items-end !justify-between gap-4">
         <div className="w-full translate-x-4 flex justify-between items-center border border-gray-600 rounded-full pl-10 pr-4 py-3">
           Получил
-          <Coins coins={calculateCoins(props.sizeName, props.categoryName)} />
+          <Coins {...props} />
         </div>
         <div className="flex justify-between w-[290px]">
         <button 
