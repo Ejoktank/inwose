@@ -6,6 +6,7 @@ import { Modal } from './Modal';
 import { CreateTask } from '../partials/CreateTask';
 import { Logo } from '../assets/Logo';
 import { CoinsProps } from '../types/types';
+import { useGetTasks } from '../hooks/useGetTasks';
 
 const headerItems = [
   { path: '/mytasks', text: 'Мои задачи' },
@@ -14,12 +15,22 @@ const headerItems = [
 ]
 
 const coins: CoinsProps = {
-  coinsAmount: 1128,
+  coinsAmount: 0,
   hasBg: true,
+  hasPlus: false,
+  coinColor: 'green',
+  coinsNotEarnedAmount: 0,
 }
 
 export function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const {tasks, completed, upcoming} = useGetTasks();
+
+  completed.forEach(task => {
+    console.log("Coins amount:");
+    console.log(task.coinsAmount);
+    coins.coinsAmount += task.coinsAmount;
+  })
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -43,7 +54,7 @@ export function Header() {
         </nav>
         <div className="gap-2">
           <Button type='arbitrary' style={{ backgroundColor: "#0066ff", color: "white" }} onClick={openModal}>+ создать задачу</Button>
-          <Coins coins={coins} />
+          <Coins {...coins} />
         </div>
       </div>
 

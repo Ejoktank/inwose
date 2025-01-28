@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Size } from "../components/Size";
 import { Coins } from "../components/Coins";
 import { determineCategory } from "../utils/determineCategory";
@@ -13,30 +13,52 @@ export function UpcomingTask(props: TaskProps) {
   const formattedCategory = determineCategory(props.categoryName)
   const timeLeft = props.deadline && props.deadlineTimeMS && moment(props.deadline + props.deadlineTimeMS).fromNow()
   const now = moment().valueOf();
-  const timeForComplete = now - props.createdAt;  
-  
-  setInterval(() => {
-    if (now - props.deadline - props.deadlineTimeMS > 0) {
-      console.log('Ждём пока у кого-нибудь истечёт дедлайн');
-      
-      if(props.expiredAt == 0) {
-        const propsClone = structuredClone(props);
-        propsClone.expiredAt = moment().valueOf();
-        propsClone.coinsNotEarnedAmount = propsClone.coinsAmount
-        propsClone.coinsAmount = Math.floor(propsClone.coinsAmount * 2/3)
-        propsClone.coinColor = "red"
-        updateTask(props.id, propsClone);
-        
-        console.log("Просрочено: ",  props.taskName);
-        console.log(props);
+  const timeForComplete = now - props.createdAt;
+
+  useEffect(() => {
+    // const interval = setInterval(() => {
+    //   if (props.deadline && props.deadlineTimeMS && now - props.deadline - props.deadlineTimeMS > 0) {
+    //     console.log('Ждём пока у кого-нибудь истечёт дедлайн');
+
+    //     if (props.expiredAt == 0) {
+    //       const propsClone = structuredClone(props);
+    //       propsClone.expiredAt = moment().valueOf();
+    //       propsClone.coinsNotEarnedAmount = propsClone.coinsAmount
+    //       propsClone.coinsAmount = Math.floor(propsClone.coinsAmount * 2 / 3)
+    //       propsClone.coinColor = "red"
+    //       updateTask(props.id, propsClone);
+
+    //       console.log("Просрочено: ", props.taskName);
+    //       console.log(props);
+    //     }
+    //   }
+    // }, 5000);
+
+    const interval = setInterval(() => {
+      if (props.deadline && props.deadlineTimeMS && now - props.deadline - props.deadlineTimeMS > 0) {
+        updateTask(props.id, {
+          taskStatus: "upcoming",
+          sizeName: props.sizeName,
+          taskType: props.taskType,
+          categoryName: props.categoryName,
+          taskName: props.taskName,
+          createdAt: props.createdAt,
+          coinsAmount:  Math.floor(props.coinsAmount * 2 / 3),
+          coinsNotEarnedAmount: props.coinsAmount,
+          changetAt: moment().valueOf(),
+          expiredAt: moment().valueOf(),
+          coinColor: "red",
+          timeForComplete: timeForComplete,
+        });
       }
+    }, 5000)
+
+    return () => {
+      clearInterval(interval);
     }
-  }, 5000)
+  }, [])
 
-  console.log(props);
-
-
-  if(props.deletedAt != 0) return <></>
+  if (props.deletedAt != 0) return <></>
 
   return (
     <div className="container-grid mb-4 bg-gray-100 rounded-lg">
@@ -67,8 +89,8 @@ export function UpcomingTask(props: TaskProps) {
           })} />
           <Coins {...props} />
         </div>
-       <div className="flex justify-between w-[290px]">
-          <button 
+        <div className="flex justify-between w-[290px]">
+          <button
             className="ml-12 text-red-400"
             onClick={() => updateTask(props.id, {
               taskStatus: "completed",
@@ -83,11 +105,11 @@ export function UpcomingTask(props: TaskProps) {
               timeForComplete: timeForComplete,
               deletedAt: moment().valueOf(),
             })}
-            >
-              Удалить
-            </button>
+          >
+            Удалить
+          </button>
           <div className="">{taskType}</div>
-       </div>
+        </div>
       </div>
     </div>
   )

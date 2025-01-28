@@ -1,9 +1,7 @@
 import React from "react";
-import { TaskProps } from "../types/types";
+import { CoinsProps, TaskProps } from "../types/types";
 
-
-export function Coins(props: TaskProps) {
-  
+export function Coins(props: TaskProps | CoinsProps) {
   const coinsAmount = props.coinsAmount ? props.coinsAmount : 0
   const coinsNotEarnedAmount = props.coinsNotEarnedAmount ? props.coinsNotEarnedAmount : 0
   const coinColor = props.coinColor ? props.coinColor : ''
