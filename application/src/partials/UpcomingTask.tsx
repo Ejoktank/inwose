@@ -35,6 +35,9 @@ export function UpcomingTask(props: TaskProps) {
     // }, 5000);
 
     const interval = setInterval(() => {
+      if (props.expiredAt != 0) return () => {
+        clearInterval(interval);
+      };
       if (props.deadline && props.deadlineTimeMS && now - props.deadline - props.deadlineTimeMS > 0) {
         updateTask(props.id, {
           taskStatus: "upcoming",
@@ -43,7 +46,7 @@ export function UpcomingTask(props: TaskProps) {
           categoryName: props.categoryName,
           taskName: props.taskName,
           createdAt: props.createdAt,
-          coinsAmount:  Math.floor(props.coinsAmount * 2 / 3),
+          coinsAmount: Math.floor(props.coinsAmount * 2 / 3),
           coinsNotEarnedAmount: props.coinsAmount,
           changetAt: moment().valueOf(),
           expiredAt: moment().valueOf(),
