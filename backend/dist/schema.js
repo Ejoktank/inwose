@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tasks = void 0;
+exports.users = exports.tasks = void 0;
 const sqlite_core_1 = require("drizzle-orm/sqlite-core");
 exports.tasks = (0, sqlite_core_1.sqliteTable)("tasks", {
     id: (0, sqlite_core_1.integer)("id").primaryKey({ autoIncrement: true }),
@@ -24,4 +24,9 @@ exports.tasks = (0, sqlite_core_1.sqliteTable)("tasks", {
     coinsAmount: (0, sqlite_core_1.integer)('coins_amount'),
     coinsNotEarnedAmount: (0, sqlite_core_1.integer)('coins_not_earned_amount'),
     coinColor: (0, sqlite_core_1.text)('coin_color'),
+});
+exports.users = (0, sqlite_core_1.sqliteTable)("users", {
+    id: (0, sqlite_core_1.integer)("id").primaryKey({ autoIncrement: true }),
+    email: (0, sqlite_core_1.text)("email").notNull().unique(),
+    password: (0, sqlite_core_1.text)("password").notNull(),
 });

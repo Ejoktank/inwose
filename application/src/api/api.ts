@@ -4,7 +4,7 @@ import { TaskProps } from "../types/types";
 export const createTask = async (body: TaskProps) => {
   console.log(body);
   
-  const response = await fetch("http://localhost:3000/tasks", {
+  const response = await fetch("/api/tasks", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,14 +19,14 @@ export const createTask = async (body: TaskProps) => {
 };
 
 export const getAllTasks = async () => {
-  const response = await fetch("http://localhost:3000/tasks");
+  const response = await fetch("/api/tasks");
   const data = await response.json();
   console.log("Here they are!");
   return data
 };
 
 export const updateTask = async (taskId: number | undefined, updatedFields: TaskProps) => {
-  const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+  const response = await fetch(`/api/tasks/${taskId}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

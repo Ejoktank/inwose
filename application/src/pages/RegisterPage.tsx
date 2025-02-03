@@ -13,7 +13,7 @@ function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     email: email.value,
     password: password.value
   }
-  fetch('/api/login', {
+  fetch('/api/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -23,18 +23,18 @@ function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
   .then(response => response.json())
   .then(data => {
     console.log(data)
-    // window.location.href = '/mytasks'
+    window.location.href = '/login'
   })
   .catch(error => {
     console.error('Error:', error)
   })
 }
 
-export function LoginPage(props: RegisterPageProps) {
+export function RegisterPage(props: RegisterPageProps) {
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="w-1/3 h-1/3 bg-slate-200 rounded-xl flex flex-col items-center justify-center">
-        <h1 className="text-3xl font-bold">Login</h1>
+        <h1 className="text-3xl font-bold">Register</h1>
         <form 
           className="w-full flex flex-col gap-4 items-center justify-center mt-4"
           onSubmit={handleFormSubmit}>
@@ -54,7 +54,7 @@ export function LoginPage(props: RegisterPageProps) {
             type="submit"
             className="w-3/4 h-10 rounded-xl bg-slate-500 text-white"
           >
-            Login
+            Register
           </button>
         </form>
       </div>

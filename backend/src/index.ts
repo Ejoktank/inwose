@@ -1,10 +1,14 @@
 import express from "express";
 import cors from "cors";
 import { drizzle } from "drizzle-orm/better-sqlite3";
-import { tasks } from "./schema";
+import { tasks, users } from "./schema";
 import Database from "better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { eq } from "drizzle-orm";
+
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { authenticateToken } from "./auth";
 
 const sqlite = new Database("sqlite.db");
 const db = drizzle(sqlite);
@@ -21,7 +25,7 @@ app.use((req, res, next) => {
 });
 
 // Создание карточки задачи
-app.post("/tasks", async (req, res) => {
+app.post("/api/tasks", authenticateToken, async (req, res) => {
   const obj = req.body;
   // obj.validate()
   await db.insert(tasks).values(obj);
@@ -29,14 +33,14 @@ app.post("/tasks", async (req, res) => {
 });
 
 // Получение списка всех карточек задач
-app.get("/tasks", async (req, res) => {
+app.get("/api/tasks", authenticateToken, async (req, res) => {
   console.log("Обработка запроса на получение списка задач");
   const x = await db.select().from(tasks);
   return res.json(x);
 });
 
 // Изменение карточки задачи
-app.patch("/tasks/:id", async (req, res) => {
+app.patch("/api/tasks/:id", authenticateToken, async (req, res) => {
   const obj = req.body;
   const id = parseInt(req.params.id);
   if (!obj.taskType) {
@@ -47,6 +51,59 @@ app.patch("/tasks/:id", async (req, res) => {
   }
   await db.update(tasks).set(obj).where(eq(tasks.id, id));
   return res.json({ answer: "Успешно!" });
+});
+
+// Registration endpoint
+app.post("/api/register", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if user already exists
+    const existingUser = await db.select().from(users).where(eq(users.email, email));
+    if (existingUser.length > 0) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user
+    await db.insert(users).values({
+      email,
+      password: hashedPassword,
+    });
+
+    res.status(201).json({ message: "User created successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating user" });
+  }
+});
+
+// Login endpoint
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user
+    const user = await db.select().from(users).where(eq(users.email, email));
+    if (user.length === 0) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    // Check password
+    const validPassword = await bcrypt.compare(password, user[0].password);
+    if (!validPassword) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user[0].id, email: user[0].email }, process.env.JWT_SECRET as string, { expiresIn: "24h" });
+
+    res.json({ token });
+  } catch (error) {
+    console.log("Error: ", error);
+    res.status(500).json({ message: "Error logging in" });
+  }
 });
 
 app.listen(3000, () => {
