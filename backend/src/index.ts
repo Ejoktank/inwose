@@ -1,3 +1,7 @@
+import { config } from "dotenv";
+
+config()
+
 import express from "express";
 import cors from "cors";
 import { drizzle } from "drizzle-orm/better-sqlite3";
@@ -28,14 +32,16 @@ app.use((req, res, next) => {
 app.post("/api/tasks", authenticateToken, async (req, res) => {
   const obj = req.body;
   // obj.validate()
+  obj.ownerId = (req as any).user.userId
   await db.insert(tasks).values(obj);
   res.status(201).json(obj);
 });
 
 // Получение списка всех карточек задач
 app.get("/api/tasks", authenticateToken, async (req, res) => {
+  const user = (req as any).user
   console.log("Обработка запроса на получение списка задач");
-  const x = await db.select().from(tasks);
+  const x = await db.select().from(tasks).where(eq(tasks.ownerId, user.userId));
   return res.json(x);
 });
 

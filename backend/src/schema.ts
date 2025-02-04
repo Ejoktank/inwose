@@ -25,6 +25,8 @@ export const tasks = sqliteTable("tasks", {
   coinsAmount: integer('coins_amount'),
   coinsNotEarnedAmount: integer('coins_not_earned_amount'),
   coinColor: text('coin_color'),
+
+  ownerId: integer('owner_id'),
 });
 
 export const users = sqliteTable("users", {

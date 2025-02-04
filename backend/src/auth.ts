@@ -12,6 +12,7 @@ export const authenticateToken = (req: any, res: any, next: any) => {
 
   jwt.verify(token, JWT_SECRET as string, (err: any, user: any) => {
     if (err) {
+      console.error(err)
       return res.status(403).json({ message: 'Invalid token' });
     }
     req.user = user;

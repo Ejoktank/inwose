@@ -24,6 +24,7 @@ exports.tasks = (0, sqlite_core_1.sqliteTable)("tasks", {
     coinsAmount: (0, sqlite_core_1.integer)('coins_amount'),
     coinsNotEarnedAmount: (0, sqlite_core_1.integer)('coins_not_earned_amount'),
     coinColor: (0, sqlite_core_1.text)('coin_color'),
+    ownerId: (0, sqlite_core_1.integer)('owner_id'),
 });
 exports.users = (0, sqlite_core_1.sqliteTable)("users", {
     id: (0, sqlite_core_1.integer)("id").primaryKey({ autoIncrement: true }),

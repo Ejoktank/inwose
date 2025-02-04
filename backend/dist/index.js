@@ -12,6 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)();
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const better_sqlite3_1 = require("drizzle-orm/better-sqlite3");
@@ -37,13 +39,15 @@ app.use((req, res, next) => {
 app.post("/api/tasks", auth_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const obj = req.body;
     // obj.validate()
+    obj.ownerId = req.user.userId;
     yield db.insert(schema_1.tasks).values(obj);
     res.status(201).json(obj);
 }));
 // Получение списка всех карточек задач
 app.get("/api/tasks", auth_1.authenticateToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
     console.log("Обработка запроса на получение списка задач");
-    const x = yield db.select().from(schema_1.tasks);
+    const x = yield db.select().from(schema_1.tasks).where((0, drizzle_orm_1.eq)(schema_1.tasks.ownerId, user.userId));
     return res.json(x);
 }));
 // Изменение карточки задачи
