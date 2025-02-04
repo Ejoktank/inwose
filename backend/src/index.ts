@@ -27,6 +27,7 @@ const staticPath = path.resolve(__dirname, '..', 'public')
 const indexPath = path.join(staticPath, 'index.html')
 
 app.use(express.static(staticPath))
+app.get('/login', (req, res) => { res.sendFile(indexPath) })
 app.get('/register', (req, res) => { res.sendFile(indexPath) })
 app.get('/mytasks', (req, res) => { res.sendFile(indexPath) })
 
