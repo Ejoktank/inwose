@@ -9,6 +9,7 @@ import { tasks, users } from "./schema";
 import Database from "better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { eq } from "drizzle-orm";
+import * as path from "node:path"
 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -21,6 +22,8 @@ migrate(db, { migrationsFolder: "./migrations" });
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+app.use(express.static(path.resolve(__dirname, 'public')))
 
 // Middleware для логирования входящих запросов
 app.use((req, res, next) => {
