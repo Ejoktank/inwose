@@ -7,6 +7,7 @@ import { CreateTask } from '../partials/CreateTask';
 import { Logo } from '../assets/Logo';
 import { CoinsProps } from '../types/types';
 import { useGetTasks } from '../hooks/useGetTasks';
+import { useAuth } from '../context/AuthContext';
 
 const headerItems = [
   { path: '/mytasks', text: 'Мои задачи' },
@@ -25,6 +26,7 @@ const coins: CoinsProps = {
 export function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {tasks, completed, upcoming} = useGetTasks();
+  const { logout } = useAuth();
 
   completed.forEach(task => {
     console.log("Coins amount:");
@@ -62,6 +64,7 @@ export function Header() {
       <Modal isOpen={isModalOpen} handleClose={closeModal}>
         <CreateTask />
       </Modal>
+      <button onClick={logout}>logout</button>
     </header>
   );
 }

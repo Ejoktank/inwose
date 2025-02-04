@@ -1,43 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { Navigate } from "react-router-dom";
 
 interface RegisterPageProps {
 
 }
 
-function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
-  event.preventDefault()
-  console.log('Form submitted')
-  const email = event.currentTarget.elements.namedItem('email') as HTMLInputElement
-  const password = event.currentTarget.elements.namedItem('password') as HTMLInputElement
-  const json = {
-    email: email.value,
-    password: password.value
-  }
-  fetch('/api/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(json)
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data)
-    // window.location.href = '/mytasks'
-  })
-  .catch(error => {
-    console.error('Error:', error)
-  })
-}
-
 export function LoginPage(props: RegisterPageProps) {
+  const authContext = useAuth();
+
+  if (authContext.isAuthenticated) {
+    return <Navigate to="/mytasks" replace />;
+  }
+
+  function handleLogin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    console.log('Form submitted')
+    const email = event.currentTarget.elements.namedItem('email') as HTMLInputElement
+    const password = event.currentTarget.elements.namedItem('password') as HTMLInputElement
+    const json = {
+      email: email.value,
+      password: password.value
+    }
+    fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(json)
+    })
+    .then(response => response.json())
+    .then(data => {
+  
+      console.log(data);
+      localStorage.setItem('token', data.token);
+      authContext.checkAuth();
+      console.log('Token set:', localStorage.getItem('token')); // Should show the toke
+
+      window.location.href = '/mytasks'
+    })
+    .catch(error => {
+      console.error('Error:', error)
+    })
+  }
+
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="w-1/3 h-1/3 bg-slate-200 rounded-xl flex flex-col items-center justify-center">
         <h1 className="text-3xl font-bold">Login</h1>
         <form 
           className="w-full flex flex-col gap-4 items-center justify-center mt-4"
-          onSubmit={handleFormSubmit}>
+          onSubmit={(event) => handleLogin(event)}>
           <input
             type="text"
             placeholder="Email"
@@ -58,14 +71,6 @@ export function LoginPage(props: RegisterPageProps) {
           </button>
         </form>
       </div>
-      {/* <button
-        className="px-4 py-2 bg-cyan-400 rounded-xl"
-        onClick={() => {
-          window.location.href = '/mytasks'
-        }}
-      >
-        Push me
-      </button> */}
     </div>
   )
 };

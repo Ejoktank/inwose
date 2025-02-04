@@ -3,10 +3,11 @@ import { PageWrapper } from "../components/PageWrapper";
 import { UpcomingTask } from "../partials/UpcomingTask";
 import { CompletedTask } from "../partials/CompletedTask";
 import { useGetTasks } from "../hooks/useGetTasks";
+import { useAuth } from "../context/AuthContext";
 
 export function MyTasksPage() {
   const getTasks = useGetTasks();
-
+  
   return (
     <PageWrapper>
       <div className="container-grid">
