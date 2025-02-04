@@ -23,7 +23,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use(express.static(path.resolve(__dirname, 'public')))
+app.use(express.static(path.resolve(__dirname, '..', 'public')))
 
 // Middleware для логирования входящих запросов
 app.use((req, res, next) => {
