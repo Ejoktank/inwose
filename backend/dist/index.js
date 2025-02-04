@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -21,6 +44,7 @@ const schema_1 = require("./schema");
 const better_sqlite3_2 = __importDefault(require("better-sqlite3"));
 const migrator_1 = require("drizzle-orm/better-sqlite3/migrator");
 const drizzle_orm_1 = require("drizzle-orm");
+const path = __importStar(require("node:path"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const auth_1 = require("./auth");
@@ -30,6 +54,11 @@ const db = (0, better_sqlite3_1.drizzle)(sqlite);
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+const staticPath = path.resolve(__dirname, '..', 'public');
+const indexPath = path.join(staticPath, 'index.html');
+app.use(express_1.default.static(staticPath));
+app.get('/register', (req, res) => { res.sendFile(indexPath); });
+app.get('/mytasks', (req, res) => { res.sendFile(indexPath); });
 // Middleware для логирования входящих запросов
 app.use((req, res, next) => {
     console.log(`[${new Date().toUTCString()}] ${req.method} ${req.url}`);
