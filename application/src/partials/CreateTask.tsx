@@ -3,15 +3,16 @@ import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Radio } from "../components/Radio";
 import moment from "moment";
-import { createTask } from "../api/api";
 import { determineCoinsAmount } from "../utils/calculateCoins";
-import { TaskProps } from "../types/types";
+import { api, TaskCreateModelType } from "../lib/fetcher/api";
 
 export function CreateTask() {
 
+  /* Almost died, when I saw it */
+  /* Remove this к хуям pls */
   const now = Date.now();
   const dateNow = new Date(now).toLocaleString();
-  const dateUpcoming = new Date(now + 604800000).toLocaleString();
+  const dateUpcoming = new Date(now + 604800000 /* mmm, nice */).toLocaleString();
   const dateNowStr = dateNow
   const dateUpcomingStr = dateUpcoming.toLocaleString();
 
@@ -22,11 +23,12 @@ export function CreateTask() {
   }
 
   function formSubmit(e: React.FormEvent<HTMLFormElement>) {
+    // если что, хуи здесь
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
 
-    const obj:TaskProps = {
+    const obj:TaskCreateModelType = {
       createdAt: 0,
       changetAt: 0,
       deletedAt: 0,
@@ -38,8 +40,8 @@ export function CreateTask() {
       dateOfComplete: 0,
       timeForComplete: 0,
 
-      coinsHasPlus: 1,
-      coinsHasBg: 0,
+      coinsHasPlus: true,
+      coinsHasBg: false,
       coinsAmount: 0,
       coinsNotEarnedAmount: 0,
       coinColor: "green",
@@ -48,7 +50,8 @@ export function CreateTask() {
       sizeName: 'md',
       taskName: '',
       taskStatus: 'upcoming',
-      taskType: 'personal'
+      taskType: 'personal',
+      taskDescr: null
     }
 
     for (const [key, value] of formData) {
@@ -64,7 +67,12 @@ export function CreateTask() {
 
     console.log(obj);
 
-    createTask(obj);
+    api.tasks.create(obj)
+      .then(() => {
+        alert('Карточка создана')
+        location.reload() // TODO: bad, change to mutation
+      })
+      .catch(console.error)
   }
 
   return (

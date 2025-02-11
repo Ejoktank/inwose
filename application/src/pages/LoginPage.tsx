@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
+import { api } from "../lib/fetcher/api";
 
 interface RegisterPageProps {
 
@@ -16,30 +17,16 @@ export function LoginPage(props: RegisterPageProps) {
   function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     console.log('Form submitted')
-    const email = event.currentTarget.elements.namedItem('email') as HTMLInputElement
+    const username = event.currentTarget.elements.namedItem('email') as HTMLInputElement
     const password = event.currentTarget.elements.namedItem('password') as HTMLInputElement
-    const json = {
-      email: email.value,
+    api.user.login({
+      username: username.value,
       password: password.value
-    }
-    fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(json)
-    })
-    .then(response => response.json())
-    .then(data => {
-  
-      console.log(data);
-      localStorage.setItem('token', data.token);
+    }).then(data => {
+      localStorage.setItem('accessToken', data.access);
       authContext.checkAuth();
-      console.log('Token set:', localStorage.getItem('token')); // Should show the toke
-
-      window.location.href = '/mytasks'
-    })
-    .catch(error => {
+      window.location.href = '/mytasks';
+    }).catch(error => { 
       console.error('Error:', error)
     })
   }

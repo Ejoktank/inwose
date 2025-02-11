@@ -2,13 +2,13 @@ import React from "react";
 import { Size } from "../components/Size";
 import { Coins } from "../components/Coins";
 import { determineCategory } from "../utils/determineCategory";
-import { TaskProps } from "../types/types";
 import moment from "moment";
 import { formatTime } from "../utils/formatTime";
-import { updateTask } from "../api/api";
+import { api, taskModel } from "../lib/fetcher/api";
+import { z } from "zod";
 
 
-export function CompletedTask(props: TaskProps) {
+export function CompletedTask(props: z.infer<typeof taskModel>) {
   const { taskType = "personal" } = props;
   const formattedCategory = determineCategory(props.categoryName)
   const daysPassed = moment(props.dateOfComplete).fromNow()
@@ -38,18 +38,26 @@ export function CompletedTask(props: TaskProps) {
         <div className="flex justify-between w-[290px]">
         <button 
             className="ml-12 text-red-400 z-10"
-            onClick={() => updateTask(props.id, {
-              taskStatus: "completed",
-              sizeName: props.sizeName,
-              taskType: props.taskType,
-              categoryName: props.categoryName,
-              taskName: props.taskName,
-              createdAt: props.createdAt,
-              coinsAmount: props.coinsAmount,
-              changetAt: moment().valueOf(),
-              dateOfComplete: moment().valueOf(),
-              deletedAt: moment().valueOf(),
-            })}
+            onClick={() => 
+              api.tasks.update({
+                id: props.id,
+                taskStatus: "completed",
+                sizeName: props.sizeName,
+                taskType: props.taskType,
+                categoryName: props.categoryName,
+                taskName: props.taskName,
+                createdAt: props.createdAt,
+                coinsAmount: props.coinsAmount,
+                changetAt: moment().valueOf(),
+                dateOfComplete: moment().valueOf(),
+                deletedAt: moment().valueOf(),
+              })
+              .then(() => {
+                alert('Карточка удалена')
+                location.reload() // TODO: bad, change to mutation
+              })
+              .catch(console.error)
+            }
             >
               Удалить
             </button>

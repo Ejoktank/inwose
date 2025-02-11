@@ -31,7 +31,7 @@ export function Header() {
   completed.forEach(task => {
     console.log("Coins amount:");
     console.log(task.coinsAmount);
-    coins.coinsAmount += task.coinsAmount;
+    coins.coinsAmount += (task.coinsAmount ?? 0);
   })
 
   const openModal = () => {

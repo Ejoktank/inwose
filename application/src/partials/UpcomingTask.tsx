@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import { Size } from "../components/Size";
 import { Coins } from "../components/Coins";
 import { determineCategory } from "../utils/determineCategory";
-import { TaskProps } from "../types/types";
 import 'moment/locale/ru';
 import moment from "moment";
-import { updateTask } from "../api/api";
 import { Button } from "../components/Button";
+import { z } from "zod";
+import { api, taskModel } from "../lib/fetcher/api";
 
-export function UpcomingTask(props: TaskProps) {
+export function UpcomingTask(props: z.infer<typeof taskModel>) {
   const { taskType = "personal" } = props;
   const formattedCategory = determineCategory(props.categoryName)
   const timeLeft = props.deadline && props.deadlineTimeMS && moment(props.deadline + props.deadlineTimeMS).fromNow()
@@ -39,20 +39,26 @@ export function UpcomingTask(props: TaskProps) {
         clearInterval(interval);
       };
       if (props.deadline && props.deadlineTimeMS && now - props.deadline - props.deadlineTimeMS > 0) {
-        updateTask(props.id, {
+        api.tasks.update({
+          id: props.id,
           taskStatus: "upcoming",
           sizeName: props.sizeName,
           taskType: props.taskType,
           categoryName: props.categoryName,
           taskName: props.taskName,
           createdAt: props.createdAt,
-          coinsAmount: Math.floor(props.coinsAmount * 2 / 3),
+          coinsAmount: Math.floor((props.coinsAmount ?? 1) * 2 / 3),
           coinsNotEarnedAmount: props.coinsAmount,
           changetAt: moment().valueOf(),
           expiredAt: moment().valueOf(),
           coinColor: "red",
           timeForComplete: timeForComplete,
-        });
+        })
+        .then(() => {
+          alert('Карточка просрочена походу')
+          location.reload() // TODO: bad, change to mutation
+        })
+        .catch(console.error)
       }
     }, 5000)
 
@@ -78,24 +84,9 @@ export function UpcomingTask(props: TaskProps) {
       </div>
       <div className="flex flex-col !items-end !justify-between gap-4">
         <div className="flex justify-between items-center w-[290px]">
-          <Button type={"transparent"} onClick={() => updateTask(props.id, {
-            taskStatus: "completed",
-            sizeName: props.sizeName,
-            taskType: props.taskType,
-            categoryName: props.categoryName,
-            taskName: props.taskName,
-            createdAt: props.createdAt,
-            coinsAmount: props.coinsAmount,
-            changetAt: moment().valueOf(),
-            dateOfComplete: moment().valueOf(),
-            timeForComplete: timeForComplete,
-          })} />
-          <Coins {...props} />
-        </div>
-        <div className="flex justify-between w-[290px]">
-          <button
-            className="ml-12 text-red-400"
-            onClick={() => updateTask(props.id, {
+          <Button type={"transparent"} onClick={() => 
+            api.tasks.update({
+              id: props.id,
               taskStatus: "completed",
               sizeName: props.sizeName,
               taskType: props.taskType,
@@ -106,8 +97,39 @@ export function UpcomingTask(props: TaskProps) {
               changetAt: moment().valueOf(),
               dateOfComplete: moment().valueOf(),
               timeForComplete: timeForComplete,
-              deletedAt: moment().valueOf(),
-            })}
+            })
+            .then(() => {
+              alert('Карточка завершена')
+              location.reload() // TODO: bad, change to mutation
+            })
+            .catch(console.error)
+            } />
+          <Coins {...props} />
+        </div>
+        <div className="flex justify-between w-[290px]">
+          <button
+            className="ml-12 text-red-400"
+            onClick={() => 
+              api.tasks.update({
+                id: props.id,
+                taskStatus: "completed",
+                sizeName: props.sizeName,
+                taskType: props.taskType,
+                categoryName: props.categoryName,
+                taskName: props.taskName,
+                createdAt: props.createdAt,
+                coinsAmount: props.coinsAmount,
+                changetAt: moment().valueOf(),
+                dateOfComplete: moment().valueOf(),
+                timeForComplete: timeForComplete,
+                deletedAt: moment().valueOf(),
+              })
+              .then(() => {
+                alert('Карточка удалена')
+                location.reload() // TODO: bad, change to mutation
+              })
+              .catch(console.error)
+            }
           >
             Удалить
           </button>

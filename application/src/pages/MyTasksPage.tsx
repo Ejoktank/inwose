@@ -6,7 +6,7 @@ import { useGetTasks } from "../hooks/useGetTasks";
 import { useAuth } from "../context/AuthContext";
 
 export function MyTasksPage() {
-  const getTasks = useGetTasks();
+  const tasks = useGetTasks();
   
   return (
     <PageWrapper>
@@ -17,16 +17,16 @@ export function MyTasksPage() {
         </div>
         <div>Задачи</div>
       </div>
-      {getTasks.tasks.length > 0 ? (
+      {tasks.tasks.length > 0 ? (
         <>
-          {getTasks.upcoming.map(task => (
+          {tasks.upcoming.map(task => (
             <UpcomingTask {...task} key={`${task.id}-${task.dateOfComplete}_${task.timeForComplete}`} />
           ))}
           <div className="container-grid">
             <div className=""></div>
             <div className="">Завершённые</div>
           </div>
-          {getTasks.completed.map(task => (
+          {tasks.completed.map(task => (
             <CompletedTask {...task}  key={`${task.id}-${task.dateOfComplete}_${task.timeForComplete}`} />
           ))}
         </>
