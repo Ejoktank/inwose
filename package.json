@@ -1,0 +1,8 @@
+{
+    "name": "inwose-root",
+    "private": true,
+    "scripts": {
+        "server-prepare": "node scripts/prepare.mjs",
+        "server-start": "node Inwose-server/server"
+    }
+}
