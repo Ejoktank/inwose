@@ -1,0 +1,3 @@
+[submodule "Inwose-server"]
+	path = Inwose-server
+	url = git@github.com:Ejoktank/Inwose-server.git
