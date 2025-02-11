@@ -1,24 +1,61 @@
 import { z } from "zod";
 import { utils, create } from "./core/exec";
 
+const loginModel = z.object({
+    refresh: z.string(),
+    access : z.string()
+});
+const tokenErrorModel = z.object({
+    ok: z.boolean(),
+    wrongAccessToken: z.boolean(),
+})
+
 const fetcher = create({ 
-    baseUrl: '/v0/api', 
+    baseUrl: '/v0/api',
     getCredentials: () => {
         const token = localStorage.getItem('accessToken')
         if (!token || token === '') {
             return undefined
         }
         return token;
+    },
+    hook: ({ data, status, ask, repeat }) => {
+        if (status === 401) {
+            const token = localStorage.getItem('accessToken')
+            if (!token || token === '') {
+                return undefined
+            }
+            const refresh = localStorage.getItem('refreshToken')
+            if (!refresh) {
+                return undefined
+            }
+            const parseResult = tokenErrorModel.safeParse(data)
+            if (!parseResult.success) {
+                return undefined
+            }
+            if (!parseResult.data.ok && parseResult.data.wrongAccessToken) {
+                return ask('POST', '/refresh', {
+                    body: { token: refresh }
+                })
+                    .then(x => loginModel.safeParseAsync(x.data))
+                    .then(res => {
+                        if (!res.success) {
+                            return Promise.reject(res.error)
+                        }
+                        localStorage.setItem('accessToken', res.data.access)
+                        localStorage.setItem('refreshToken', res.data.refresh)
+                        return Promise.resolve()
+                    })
+                    .then(repeat)
+            }
+        }
+        return undefined
     }
 })
 
 ////////////////////////////////////////////////
 // MODELS
 
-const loginModel = z.object({
-    refresh: z.string(),
-    access : z.string()
-});
 interface LoginParam {
     username: string
     password: string

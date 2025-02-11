@@ -24,6 +24,7 @@ export function LoginPage(props: RegisterPageProps) {
       password: password.value
     }).then(data => {
       localStorage.setItem('accessToken', data.access);
+      localStorage.setItem('refreshToken', data.refresh);
       authContext.checkAuth();
       window.location.href = '/mytasks';
     }).catch(error => { 

@@ -2,7 +2,7 @@
 /////////////////////////////////////////////////////////////////////
 /* EXEC LAYER */
 
-import { z, ZodType } from "zod";
+import { unknown, z, ZodType } from "zod";
 
 type Method = 
       'GET'   
@@ -139,7 +139,8 @@ export function createRequest(config:RequestConfigType) {
             query = '?' + params.toString();
         }
         
-        return exec(method, base + truePath + query, content?.body);
+        return exec(method, base + truePath + query, content?.body)
+            .then(processJson)
     }
 
     return req;
@@ -148,7 +149,16 @@ export function createRequest(config:RequestConfigType) {
 /////////////////////////////////////////////////////////////////////
 /* VALIDATION LAYER */
 
-type ValidationConfigType = RequestConfigType
+interface HookParam {
+    data:unknown
+    status: number,
+    ask: ReturnType<typeof createRequest>
+    repeat: () => Promise<unknown>
+}
+
+type ValidationConfigType = RequestConfigType & {
+    hook?: (x:HookParam) => Promise<unknown> | undefined
+}
 
 interface RequestParams {
     method:Method
@@ -161,7 +171,14 @@ export function createValidation(config:ValidationConfigType) {
 
     const process = <M>(model:ZodType<M>, params:RequestParams) =>
         req(params.method, params.url, params.content)
-            .then(parseIfJson)
+            .then(res => {
+                return config.hook?.({ 
+                    data: res.data,
+                    status: res.status,
+                    ask: req,
+                    repeat: () => req(params.method, params.url, params.content)
+                }) ?? res.data
+            })
             .then(model.safeParseAsync)
             .then(x => x.success ? x.data : Promise.reject(new BadContentError()))
 
@@ -296,8 +313,11 @@ class FetcherError extends Error {
 // class NotJsonContentError extends FetcherError { }
 class BadContentError extends FetcherError { }
 
-function parseIfJson(r:Response) {
-    return r.json();
+function processJson(r:Response) {
+    return r.json().then(data => ({
+        data,
+        status: r.status
+    }))
 }
 
 function detachBase(url:string): [string, string] {
